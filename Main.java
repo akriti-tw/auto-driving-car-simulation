@@ -23,7 +23,7 @@ public class Main {
 
                 if (option == 1) {
 
-                    Car car = inputReader.readCar(simulation.getCars());
+                    Car car = inputReader.readCar(simulation);
 
                     simulation.addCar(car);
 

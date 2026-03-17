@@ -19,10 +19,14 @@ public class InputReader {
                 int height = scanner.nextInt();
                 scanner.nextLine();
 
+                if (width <= 0 || height <= 0) {
+                    System.out.println("Error: Width and height must be positive integers.");
+                    continue;
+                }
+
                 System.out.println("\nYou have created a field of " + width + " x " + height + ".");
 
                 return new int[]{width, height};
-
             } catch (Exception e) {
                 System.out.println("Error: Please enter valid numbers.");
                 scanner.nextLine();
@@ -54,11 +58,11 @@ public class InputReader {
         }
     }
 
-    public Car readCar(List<Car> existingCars) {
+    public Car readCar(Simulation simulation) {
 
-        String name = readUniqueName(existingCars);
+        String name = readUniqueName(simulation.getCars());
 
-        int[] pos = readPosition(name);
+        int[] pos = readPosition(name, simulation.width, simulation.height);
 
         String commands = readCommands(name);
 
@@ -83,7 +87,7 @@ public class InputReader {
         }
     }
 
-    private int[] readPosition(String name) {
+    private int[] readPosition(String name, int width, int height) {
 
         while (true) {
 
@@ -102,6 +106,11 @@ public class InputReader {
                 int x = Integer.parseInt(parts[0]);
                 int y = Integer.parseInt(parts[1]);
                 char dir = parts[2].toUpperCase().charAt(0);
+
+                if (x < 0 || x >= width || y < 0 || y >= height) {
+                    System.out.println("Error: Position must be within field boundaries.");
+                    continue;
+                }
 
                 if (!Direction.isValid(dir)) {
                     System.out.println("Error: Direction must be N,S,E,W");
