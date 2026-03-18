@@ -1,15 +1,17 @@
+package src.main.org.app.simulation;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Simulation {
+public class SimulationService {
 
     int width;
     int height;
     List<Car> cars;
 
-    public Simulation(int width, int height, List<Car> cars) {
+    public SimulationService(int width, int height, List<Car> cars) {
         this.width = width;
         this.height = height;
         this.cars = cars;
@@ -30,14 +32,14 @@ public class Simulation {
 
                 // Cars that already collided or have no commands left remain stationary
                 if (car.collided || !car.hasNextCommand()) {
-                    nextPositions.put(car, new int[]{car.x, car.y});
+                    nextPositions.put(car, new int[]{car.position.x, car.position.y});
                     continue;
                 }
 
                 char command = car.getNextCommand();
 
-                int newX = car.x;
-                int newY = car.y;
+                int newX = car.position.x;
+                int newY = car.position.y;
 
                 if (command == 'L') {
                     car.direction = turnLeft(car.direction);
@@ -51,8 +53,8 @@ public class Simulation {
 
                     // Ignore move if it goes outside the field
                     if (!isInside(newX, newY)) {
-                        newX = car.x;
-                        newY = car.y;
+                        newX = car.position.x;
+                        newY = car.position.y;
                     }
                 }
 
@@ -89,8 +91,8 @@ public class Simulation {
 
             for (Car car : cars) {
                 int[] pos = nextPositions.get(car);
-                car.x = pos[0];
-                car.y = pos[1];
+                car.position.x = pos[0];
+                car.position.y = pos[1];
             }
         }
     }
@@ -138,7 +140,7 @@ public class Simulation {
         System.out.println("\nYour current list of cars are:");
 
         for (Car c : cars) {
-            System.out.println("- " + c.name + ", (" + c.x + "," + c.y + ") " + c.direction + ", " + c.commands);
+            System.out.println("- " + c.name + ", (" + c.position.x + "," + c.position.y + ") " + c.direction + ", " + c.commands);
         }
     }
 

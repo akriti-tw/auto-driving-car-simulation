@@ -1,3 +1,5 @@
+package src.main.org.app.simulation;
+
 import java.util.List;
 
 public class ResultPrinter {
@@ -8,11 +10,11 @@ public class ResultPrinter {
             if (car.collided) {
                 System.out.println("- " + car.name +
                         ", collides with " + String.join(", ", car.collidedWith) +
-                        " at (" + car.x + "," + car.y + ") at step " +
+                        " at (" + car.position.x + "," + car.position.y + ") at step " +
                         car.collisionStep);
             } else {
                 System.out.println("- " + car.name +
-                        ", (" + car.x + "," + car.y + ") " +
+                        ", (" + car.position.x + "," + car.position.y + ") " +
                         car.direction);
             }
         }

@@ -1,3 +1,5 @@
+package src.main.org.app.simulation;
+
 import java.util.*;
 
 public class InputReader {
@@ -58,15 +60,15 @@ public class InputReader {
         }
     }
 
-    public Car readCar(Simulation simulation) {
+    public Car readCar(SimulationService simulationService) {
 
-        String name = readUniqueName(simulation.getCars());
+        String name = readUniqueName(simulationService.getCars());
 
-        int[] pos = readPosition(name, simulation.width, simulation.height);
+        int[] pos = readPosition(name, simulationService.width, simulationService.height);
 
         String commands = readCommands(name);
 
-        return new Car(name, pos[0], pos[1], Direction.fromChar((char) pos[2]), commands);
+        return new Car(name, new Coordinate(pos[0], pos[1]), Direction.valueOf(String.valueOf((char) pos[2])), commands);
     }
 
     private String readUniqueName(List<Car> cars) {
@@ -83,7 +85,7 @@ public class InputReader {
 
             if (!duplicate) return name;
 
-            System.out.println("Error: Car name must be unique.");
+            System.out.println("Error: src.main.org.app.Car name must be unique.");
         }
     }
 
@@ -97,7 +99,7 @@ public class InputReader {
             String[] parts = input.split(" ");
 
             if (parts.length != 3) {
-                System.out.println("Error: Format must be 'x y Direction'. Example: 1 2 N");
+                System.out.println("Error: Format must be 'x y Direction '. Example: 1 2 N");
                 continue;
             }
 
@@ -112,10 +114,17 @@ public class InputReader {
                     continue;
                 }
 
-                if (!Direction.isValid(dir)) {
-                    System.out.println("Error: Direction must be N,S,E,W");
-                    continue;
-                }
+//                if (!Direction.isValid(dir)) {
+//                    System.out.println("Error: Direction  must be N,S,E,W");
+//                    continue;
+//                }
+
+                try {
+                        Direction.fromChar(dir);
+                    } catch (IllegalArgumentException e) {
+                        System.out.println("Error: Direction invalid.");
+                        continue;
+                    }
 
                 return new int[]{x, y, dir};
 
@@ -132,12 +141,14 @@ public class InputReader {
             System.out.println("Please enter the commands for car " + name + ":");
             String commands = scanner.nextLine().toUpperCase();
 
-            boolean valid = commands.chars()
-                    .allMatch(c -> c == 'F' || c == 'L' || c == 'R');
+            try {
+                commands.chars()
+                        .forEach(c -> Command.fromChar((char) c));
 
-            if (valid) return commands;
-
-            System.out.println("Error: Commands can only contain F, L, R.");
+                return commands;
+            } catch (IllegalArgumentException e) {
+                System.out.println("Error: Command invalid.");
+            }
         }
     }
 

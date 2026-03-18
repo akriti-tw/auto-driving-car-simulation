@@ -1,11 +1,12 @@
+package src.main.org.app.simulation;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class Car {
 
     String name;
-    int x;
-    int y;
+    Coordinate position;
     Direction direction;
     String commands;
     int commandIndex = 0;
@@ -14,10 +15,9 @@ public class Car {
     List<String> collidedWith = new ArrayList<>();
     int collisionStep = -1;
 
-    public Car(String name, int x, int y, Direction direction, String commands) {
+    public Car(String name, Coordinate position, Direction direction, String commands) {
         this.name = name;
-        this.x = x;
-        this.y = y;
+        this.position = position;
         this.direction = direction;
         this.commands = commands;
     }
