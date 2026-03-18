@@ -1,6 +1,9 @@
-package src.main.org.app.simulation;
+package org.app;
 
-import java.util.*;
+import org.app.model.*;
+
+import java.util.List;
+import java.util.Scanner;
 
 public class InputReader {
 
@@ -10,7 +13,7 @@ public class InputReader {
         this.scanner = scanner;
     }
 
-    public int[] readFieldSize() {
+    public Field readField() {
 
         while (true) {
 
@@ -28,7 +31,7 @@ public class InputReader {
 
                 System.out.println("\nYou have created a field of " + width + " x " + height + ".");
 
-                return new int[]{width, height};
+                return new Field(width, height);
             } catch (Exception e) {
                 System.out.println("Error: Please enter valid numbers.");
                 scanner.nextLine();
@@ -64,11 +67,11 @@ public class InputReader {
 
         String name = readUniqueName(simulationService.getCars());
 
-        int[] pos = readPosition(name, simulationService.width, simulationService.height);
+        int[] pos = readPosition(name, simulationService.getField());
 
         String commands = readCommands(name);
 
-        return new Car(name, new Coordinate(pos[0], pos[1]), Direction.valueOf(String.valueOf((char) pos[2])), commands);
+        return new Car(name, new Coordinate(pos[0], pos[1]), Direction.fromChar((char) pos[2]), commands);
     }
 
     private String readUniqueName(List<Car> cars) {
@@ -81,15 +84,15 @@ public class InputReader {
             if (cars.isEmpty()) return name;
 
             boolean duplicate = cars.stream()
-                    .anyMatch(c -> c.name.equalsIgnoreCase(name));
+                    .anyMatch(c -> c.getName().equalsIgnoreCase(name));
 
             if (!duplicate) return name;
 
-            System.out.println("Error: src.main.org.app.Car name must be unique.");
+            System.out.println("Error: Car name must be unique.");
         }
     }
 
-    private int[] readPosition(String name, int width, int height) {
+    private int[] readPosition(String name, Field field) {
 
         while (true) {
 
@@ -107,24 +110,21 @@ public class InputReader {
 
                 int x = Integer.parseInt(parts[0]);
                 int y = Integer.parseInt(parts[1]);
-                char dir = parts[2].toUpperCase().charAt(0);
+                Coordinate coordinate = new Coordinate(x, y);
 
-                if (x < 0 || x >= width || y < 0 || y >= height) {
-                    System.out.println("Error: Position must be within field boundaries.");
+                if (!field.isInside(coordinate)) {
+                    System.out.println("Error: Position must be within the field boundaries.");
                     continue;
                 }
 
-//                if (!Direction.isValid(dir)) {
-//                    System.out.println("Error: Direction  must be N,S,E,W");
-//                    continue;
-//                }
+                char dir = parts[2].toUpperCase().charAt(0);
 
                 try {
-                        Direction.fromChar(dir);
-                    } catch (IllegalArgumentException e) {
-                        System.out.println("Error: Direction invalid.");
-                        continue;
-                    }
+                    Direction.fromChar(dir);
+                } catch (IllegalArgumentException e) {
+                    System.out.println("Error: Direction invalid.");
+                    continue;
+                }
 
                 return new int[]{x, y, dir};
 
@@ -174,4 +174,3 @@ public class InputReader {
         }
     }
 }
-

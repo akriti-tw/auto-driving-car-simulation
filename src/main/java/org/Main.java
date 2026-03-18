@@ -1,9 +1,10 @@
-package src.main;
+package org;
 
-import src.main.org.app.simulation.SimulationService;
-import src.main.org.app.simulation.Car;
-import src.main.org.app.simulation.InputReader;
-import src.main.org.app.simulation.ResultPrinter;
+import org.app.InputReader;
+import org.app.ResultPrinter;
+import org.app.SimulationService;
+import org.app.model.Car;
+import org.app.model.Field;
 
 import java.util.*;
 
@@ -16,13 +17,11 @@ public class Main {
 
         while (true) {
 
-            System.out.println("Welcome to Auto Driving src.main.org.app.Car src.main.org.app.Simulation!");
+            System.out.println("Welcome to Auto Driving Car Simulation!");
 
-            int[] field = inputReader.readFieldSize();
-            int width = field[0];
-            int height = field[1];
+            Field field = inputReader.readField();
 
-            SimulationService simulationService = new SimulationService(width, height, new ArrayList<>());
+            SimulationService simulationService = new SimulationService(field, new ArrayList<>());
 
             while (true) {
 
