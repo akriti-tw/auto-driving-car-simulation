@@ -31,16 +31,8 @@ public class Car {
         return position;
     }
 
-    public void setPosition(Coordinate position) {
-        this.position = position;
-    }
-
     public Direction getDirection() {
         return direction;
-    }
-
-    public void setDirection(Direction direction) {
-        this.direction = direction;
     }
 
     public int getTotalCommandsLength() {

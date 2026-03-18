@@ -2,7 +2,6 @@ package org.app;
 
 import org.app.model.Car;
 import org.app.model.Coordinate;
-import org.app.model.Direction;
 import org.app.model.Field;
 
 import java.util.ArrayList;
