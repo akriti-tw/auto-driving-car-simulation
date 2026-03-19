@@ -16,5 +16,9 @@ public class Field {
                 coordinate.getY() >= 0 &&
                 coordinate.getY() < height;
     }
+
+    public int getWidth() { return width;}
+
+    public int getHeight() { return height;}
 }
 
