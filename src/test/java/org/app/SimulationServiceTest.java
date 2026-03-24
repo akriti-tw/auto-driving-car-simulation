@@ -1,8 +1,11 @@
 package org.app;
 
+import org.app.exception.CarValidationException;
 import org.app.model.*;
 import org.junit.jupiter.api.Test;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class SimulationServiceTest {
 
     @Test
-    void shouldMoveSingleCarCorrectly() {
+    void runSimulation_shouldMoveSingleCarCorrectly() {
 
         Field field = new Field(10, 10);
 
@@ -33,7 +36,23 @@ class SimulationServiceTest {
     }
 
     @Test
-    void shouldDetectCollisionBetweenTwoCars() {
+    void runSimulation_shouldNotMoveCarOutsideField() {
+        Field field = new Field(2, 2);
+
+        Car car = new Car("A", new Coordinate(0, 1), Direction.N, "F");
+
+        SimulationService service =
+                new SimulationService(field, new ArrayList<>(List.of(car)));
+
+        service.runSimulation();
+
+        // stays within bounds
+        assertEquals(0, car.getPosition().getX());
+        assertEquals(1, car.getPosition().getY());
+    }
+
+    @Test
+    void runSimulation_shouldDetectCollisionBetweenTwoCars() {
         Field field = new Field(10, 10);
 
         Car carA = new Car(
@@ -63,7 +82,7 @@ class SimulationServiceTest {
     }
 
     @Test
-    void shouldStopCarsAfterCollision() {
+    void runSimulation_shouldStopCarsAfterCollision() {
         Field field = new Field(10, 10);
 
         Car carA = new Car(
@@ -96,7 +115,7 @@ class SimulationServiceTest {
     }
 
     @Test
-    void shouldHandleCarsWithDifferentCommandLengths() {
+    void runSimulation_shouldHandleCarsWithDifferentCommandLengths() {
         Field field = new Field(10, 10);
 
         Car carA = new Car(
@@ -125,7 +144,7 @@ class SimulationServiceTest {
     }
 
     @Test
-    void shouldDetectCollisionBetweenMultipleCars() {
+    void runSimulation_shouldDetectCollisionBetweenMultipleCars() {
         Field field = new Field(10, 10);
 
         Car carA = new Car(
@@ -163,4 +182,49 @@ class SimulationServiceTest {
         assertEquals(List.of("A", "B"), carC.getCollidedWith());
     }
 
+    @Test
+    void addCar_shouldAddCarToSimulation() {
+        Field field = new Field(10, 10);
+        SimulationService service = new SimulationService(field, new ArrayList<>());
+
+        Car car = new Car(
+                "A",
+                new Coordinate(1,1),
+                Direction.N,
+                "F"
+        );
+
+        service.addCar(car);
+
+        assertEquals(1, service.getCars().size());
+        assertEquals(car, service.getCars().get(0));
+    }
+
+    @Test
+    void addCar_shouldThrowExceptionWhenDuplicateCarName() {
+        Field field = new Field(10, 10);
+
+        List<Car> cars = new ArrayList<>();
+        cars.add(new Car("A", new Coordinate(0, 0), Direction.N, "F"));
+
+        SimulationService service = new SimulationService(field, cars);
+
+        Car duplicate = new Car("A", new Coordinate(1, 1), Direction.N, "F");
+
+        assertThrows(CarValidationException.class,
+                () -> service.addCar(duplicate));
+    }
+
+    @Test
+    void addCar_shouldThrowExceptionWhenPositionOutOfBounds() {
+        Field field = new Field(2, 2);
+
+        SimulationService service =
+                new SimulationService(field, new ArrayList<>());
+
+        Car car = new Car("A", new Coordinate(5, 5), Direction.N, "F");
+
+        assertThrows(CarValidationException.class,
+                () -> service.addCar(car));
+    }
 }

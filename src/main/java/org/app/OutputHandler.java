@@ -4,8 +4,8 @@ import org.app.model.Car;
 
 import java.util.List;
 
-public class ResultPrinter {
-    public static void print(List<Car> cars) {
+public class OutputHandler {
+    public static void printResults(List<Car> cars) {
         System.out.println("\nAfter simulation, the result is:");
 
         for (Car car : cars) {
@@ -19,6 +19,17 @@ public class ResultPrinter {
                         ", (" + car.getPosition().getX() + "," + car.getPosition().getY() + ") " +
                         car.getDirection());
             }
+        }
+    }
+
+    public static void printCars(List<Car> cars) {
+
+        System.out.println("\nYour current list of cars are:");
+
+        for (Car c : cars) {
+            System.out.println("- " + c.getName() +
+                    ", (" + c.getPosition().getX() + "," + c.getPosition().getY() + ") " +
+                    c.getDirection() + ", " + c.getCommands());
         }
     }
 }

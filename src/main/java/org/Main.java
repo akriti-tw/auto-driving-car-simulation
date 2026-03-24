@@ -1,8 +1,9 @@
 package org;
 
-import org.app.InputReader;
-import org.app.ResultPrinter;
+import org.app.InputHandler;
+import org.app.OutputHandler;
 import org.app.SimulationService;
+import org.app.exception.CarValidationException;
 import org.app.model.Car;
 import org.app.model.Field;
 
@@ -13,27 +14,34 @@ public class Main {
     public static void main(String[] args) {
 
         Scanner scanner = new Scanner(System.in);
-        InputReader inputReader = new InputReader(scanner);
+        InputHandler inputHandler = new InputHandler(scanner);
+
+        System.out.println("Welcome to Auto Driving Car Simulation!");
 
         while (true) {
 
-            System.out.println("Welcome to Auto Driving Car Simulation!");
-
-            Field field = inputReader.readField();
+            Field field = inputHandler.readField();
 
             SimulationService simulationService = new SimulationService(field, new ArrayList<>());
 
             while (true) {
 
-                int option = inputReader.readMenuOption();
+                int option = inputHandler.readMenuOption();
 
                 if (option == 1) {
 
-                    Car car = inputReader.readCar(simulationService);
+                    while (true) {
+                        try {
+                            Car car = inputHandler.readCar();
+                            simulationService.addCar(car);
+                            break;
+                        } catch (CarValidationException e) {
+                            System.out.println("Error: " + e.getMessage());
+                            System.out.println("Please re-enter car details.\n");
+                        }
+                    }
 
-                    simulationService.addCar(car);
-
-                    simulationService.printCars();
+                    OutputHandler.printCars(simulationService.getCars());
 
                 } else {
 
@@ -43,9 +51,9 @@ public class Main {
                     }
 
                     simulationService.runSimulation();
-                    ResultPrinter.print(simulationService.getCars());
+                    OutputHandler.printResults(simulationService.getCars());
 
-                    int choice = inputReader.readRestartOption();
+                    int choice = inputHandler.readRestartOption();
 
                     if (choice == 2) {
                         System.out.println("Thank you for running the simulation. Goodbye!");

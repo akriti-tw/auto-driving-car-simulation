@@ -1,5 +1,6 @@
 package org.app;
 
+import org.app.exception.CarValidationException;
 import org.app.model.Car;
 import org.app.model.Coordinate;
 import org.app.model.Field;
@@ -75,23 +76,30 @@ public class SimulationService {
         }
     }
 
-    public Field getField() { return field;}
-
     public List<Car> getCars() {
         return cars;
     }
 
     public void addCar(Car car) {
+        validateName(car);
+        validatePosition(car);
         cars.add(car);
     }
 
-    public void printCars() {
+    private void validateName(Car car) {
 
-        System.out.println("\nYour current list of cars are:");
+        boolean duplicate = cars.stream()
+                .anyMatch(c -> c.getName().equalsIgnoreCase(car.getName()));
 
-        for (Car c : cars) {
-            System.out.println("- " + c.getName() + ", (" + c.getPosition().getX() + "," + c.getPosition().getY() + ") " + c.getDirection() + ", " + c.getCommands());
+        if (duplicate) {
+            throw new CarValidationException("Car name must be unique.");
         }
     }
 
+    private void validatePosition(Car car) {
+
+        if (!field.isInside(car.getPosition())) {
+            throw new CarValidationException("Car position must be inside field.");
+        }
+    }
 }
